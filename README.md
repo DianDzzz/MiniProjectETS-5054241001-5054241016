@@ -1,7 +1,8 @@
 # Mini Project - Evaluasi Tengah Semester
-Nama: Muhammad Hadidan Nurhaunan
-
-NRP: 5054241016
+Kelompok 6:
+- Nama - NRP:
+  1. Ustu Bina Syahdiba - 5054241001
+  2. Muhammad Hadidan Nurhaunan - 5054241016
 
 Kelas: Pemrograman Web N
 
