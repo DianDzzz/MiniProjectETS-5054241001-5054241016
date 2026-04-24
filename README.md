@@ -1,5 +1,5 @@
 # Mini Project - Evaluasi Tengah Semester
-Kelompok 6:
+Kelompok 6
 - Nama - NRP:
   1. Ustu Bina Syahdiba - 5054241001
   2. Muhammad Hadidan Nurhaunan - 5054241016
