@@ -114,7 +114,8 @@
     },
       h('div', {},
         h('div', { style: { fontSize: '14px', fontWeight: '600', color: 'var(--text)', marginBottom: '10px' } }, 'TumBAS'),
-        h('div', {}, 'Perangkat untuk kerja yang presisi. Sejak 2018.')
+        h('div', {}, 'Perangkat untuk kerja yang presisi. Sejak 2018.'),
+        h('div', { style: { marginTop: '12px', fontSize: '11px', opacity: '0.6' } }, '© 2026 TumBAS')
       ),
       col('Belanja', ['Katalog', 'Brand', 'Penawaran']),
       col('Bantuan', ['Kontak', 'Pengiriman', 'Pengembalian']),
