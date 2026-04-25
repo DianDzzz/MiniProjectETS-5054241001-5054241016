@@ -2,8 +2,8 @@
 'use strict';
 
 (function () {
-  const { CATEGORIES, BRANDS, PRODUCTS, SORT_OPTIONS, formatRupiah } = window.NIMBUS_DATA;
-  const { h, icon, stars, productVis } = window.NIMBUS_HELPERS;
+  const { CATEGORIES, BRANDS, PRODUCTS, SORT_OPTIONS, formatRupiah } = window.TumBAS_DATA;
+  const { h, icon, stars, productVis } = window.TumBAS_HELPERS;
 
   // ─── Header ─────────────────────────────────────────────
   function renderHeader(state) {
@@ -99,7 +99,7 @@
           borderTop: '1px solid var(--line)', padding: '20px 16px 32px', marginTop: '24px',
           fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between',
         }
-      }, h('span', {}, '© 2026 Nimbus'), h('span', { class: 'mono' }, 'v1.0.0'));
+      }, h('span', {}, '© 2026 TumBAS'), h('span', { class: 'mono' }, 'v1.0.0'));
     }
     const col = (title, items) => h('div', {},
       h('div', { style: { fontSize: '13px', fontWeight: '600', color: 'var(--text)', marginBottom: '10px' } }, title),
@@ -113,7 +113,7 @@
       }
     },
       h('div', {},
-        h('div', { style: { fontSize: '14px', fontWeight: '600', color: 'var(--text)', marginBottom: '10px' } }, 'NIMBUS'),
+        h('div', { style: { fontSize: '14px', fontWeight: '600', color: 'var(--text)', marginBottom: '10px' } }, 'TumBAS'),
         h('div', {}, 'Perangkat untuk kerja yang presisi. Sejak 2018.')
       ),
       col('Belanja', ['Katalog', 'Brand', 'Penawaran']),
@@ -389,5 +389,5 @@
     return overlay;
   }
 
-  window.NIMBUS_SCREENS_1 = { renderHeader, renderFooter, renderCatalog };
+  window.TumBAS_SCREENS_1 = { renderHeader, renderFooter, renderCatalog };
 })();

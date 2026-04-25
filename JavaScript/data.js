@@ -11,10 +11,10 @@ const CATEGORIES = [
   { id: 'aksesoris', label: 'Aksesoris' },
 ];
 
-const BRANDS = ['Nimbus', 'Lumen', 'Northwave', 'Kairo', 'Veridian', 'Halcyon'];
+const BRANDS = ['TumBAS', 'Lumen', 'Northwave', 'Kairo', 'Veridian', 'Halcyon'];
 
 const PRODUCTS = [
-  { id: 'p001', sku: 'NMB-AUR-01', name: 'Aurora Headphone Pro', brand: 'Nimbus', category: 'audio',
+  { id: 'p001', sku: 'NMB-AUR-01', name: 'Aurora Headphone Pro', brand: 'TumBAS', category: 'audio',
     price: 4299000, oldPrice: 4899000, rating: 4.8, reviews: 1284, stock: 12,
     colors: [{name:'Graphite',hex:'#2a2a2c'},{name:'Bone',hex:'#e8e4dc'},{name:'Forest',hex:'#2d4a3e'}], sizes: null, badge: 'BARU',
     summary: 'Headphone over-ear dengan ANC adaptif dan baterai 60 jam.',
@@ -62,7 +62,7 @@ const PRODUCTS = [
     summary: 'Keyboard mekanis 75% wireless dengan layar OLED.',
     desc: 'Bodi aluminium CNC, switch hot-swappable, gasket-mount dengan 5 lapis peredam, layar OLED 1 inci untuk metrik.',
     specs: [['Layout','75% (84 keys)'],['Switch','Hot-swap 5-pin'],['Mount','Gasket'],['Konektivitas','USB-C / 2.4G / BT'],['Baterai','4000 mAh'],['Layar','1" OLED']], shape: 'keyboard' },
-  { id: 'p009', sku: 'NMB-CDL-03', name: 'Cradle USB-C Hub', brand: 'Nimbus', category: 'aksesoris',
+  { id: 'p009', sku: 'NMB-CDL-03', name: 'Cradle USB-C Hub', brand: 'TumBAS', category: 'aksesoris',
     price: 749000, oldPrice: null, rating: 4.3, reviews: 1102, stock: 56,
     colors: [{name:'Space',hex:'#3a3a3d'}], sizes: null,
     summary: 'Hub USB-C 8-in-1 dengan output HDMI 4K 60Hz.',
@@ -98,12 +98,12 @@ const SORT_OPTIONS = [
 
 const formatRupiah = (n) => 'Rp ' + Math.round(n).toLocaleString('id-ID');
 
-const CART_KEY = 'nimbus.cart.v1';
-const AUTH_KEY = 'nimbus.auth.v1';
+const CART_KEY = 'TumBAS.cart.v1';
+const AUTH_KEY = 'TumBAS.auth.v1';
 
 const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } };
 const saveCart = (c) => { try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch {} };
 const loadAuth = () => { try { return JSON.parse(localStorage.getItem(AUTH_KEY)); } catch { return null; } };
 const saveAuth = (a) => { try { localStorage.setItem(AUTH_KEY, JSON.stringify(a)); } catch {} };
 
-window.NIMBUS_DATA = { CATEGORIES, BRANDS, PRODUCTS, SORT_OPTIONS, formatRupiah, loadCart, saveCart, loadAuth, saveAuth };
+window.TumBAS_DATA = { CATEGORIES, BRANDS, PRODUCTS, SORT_OPTIONS, formatRupiah, loadCart, saveCart, loadAuth, saveAuth };

@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-const { PRODUCTS: PRODS2, CATEGORIES: CATS2, formatRupiah: fmt2 } = window.NIMBUS_DATA;
-const { h: h2, icon: icon2, stars: stars2, productVis: pvis2 } = window.NIMBUS_HELPERS;
+const { PRODUCTS: PRODS2, CATEGORIES: CATS2, formatRupiah: fmt2 } = window.TumBAS_DATA;
+const { h: h2, icon: icon2, stars: stars2, productVis: pvis2 } = window.TumBAS_HELPERS;
 
 function renderProduct(state) {
   const isMobile = state.frame === 'mobile';
@@ -272,5 +272,5 @@ function renderCart(state) {
   );
 }
 
-window.NIMBUS_SCREENS_2 = { renderProduct, renderCart, rowKV };
+window.TumBAS_SCREENS_2 = { renderProduct, renderCart, rowKV };
 })();

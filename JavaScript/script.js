@@ -2,14 +2,14 @@
 'use strict';
 
 (function() {
-const { h } = window.NIMBUS_HELPERS;
-const { renderHeader, renderFooter, renderCatalog } = window.NIMBUS_SCREENS_1;
-const { renderProduct, renderCart } = window.NIMBUS_SCREENS_2;
-const { renderCheckout, renderLogin, renderConfirm } = window.NIMBUS_SCREENS_3;
+const { h } = window.TumBAS_HELPERS;
+const { renderHeader, renderFooter, renderCatalog } = window.TumBAS_SCREENS_1;
+const { renderProduct, renderCart } = window.TumBAS_SCREENS_2;
+const { renderCheckout, renderLogin, renderConfirm } = window.TumBAS_SCREENS_3;
 
-const THEME_KEY = 'nimbus.theme.v1';
-const _loadCart = window.NIMBUS_DATA.loadCart;
-const _saveCart = window.NIMBUS_DATA.saveCart;
+const THEME_KEY = 'TumBAS.theme.v1';
+const _loadCart = window.TumBAS_DATA.loadCart;
+const _saveCart = window.TumBAS_DATA.saveCart;
 
 // One state object per frame (desktop & mobile share cart, but routes are independent)
 function makeFrameState({ frame, container, sharedCart }) {
@@ -62,7 +62,7 @@ function makeFrameState({ frame, container, sharedCart }) {
 
 function render(state, container) {
   // sync cart ref (in case other frame mutated it)
-  state.cart = window.__nimbus_shared.cart;
+  state.cart = window.__TumBAS_shared.cart;
 
   // theme
   container.dataset.theme = state.theme;
@@ -156,9 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
       this.states.forEach(s => { s.theme = t; render(s, s._container); });
     },
   };
-  window.__nimbus_shared = shared;
+  window.__TumBAS_shared = shared;
 
-  const container = h('div', { class: 'nimbus scroll', style: { height: '100vh', width: '100vw' } });
+  const container = h('div', { class: 'TumBAS scroll', style: { height: '100vh', width: '100vw' } });
   app.appendChild(container);
 
   const state = makeFrameState({ 

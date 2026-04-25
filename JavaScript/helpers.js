@@ -111,4 +111,4 @@ function productVis(shape, color) {
   return wrap;
 }
 
-window.NIMBUS_HELPERS = { h, icon, stars, productVis };
+window.TumBAS_HELPERS = { h, icon, stars, productVis };

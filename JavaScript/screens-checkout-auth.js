@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-const { formatRupiah: fmt3 } = window.NIMBUS_DATA;
-const { h: h3, icon: icon3 } = window.NIMBUS_HELPERS;
+const { formatRupiah: fmt3 } = window.TumBAS_DATA;
+const { h: h3, icon: icon3 } = window.TumBAS_HELPERS;
 
 function field(label, attrs = {}, hint = null) {
   return h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
@@ -141,7 +141,7 @@ function renderCheckout(state) {
     ),
     h3('div', { style: { display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '12px', color: 'var(--text-muted)', padding: '12px', background: 'var(--bg-sunken)', borderRadius: '4px' } },
       h3('span', { style: { flexShrink: '0', marginTop: '1px' } }, icon3('shield', 14)),
-      h3('span', {}, 'Dengan menyelesaikan pesanan, Anda menyetujui Syarat & Ketentuan dan Kebijakan Privasi Nimbus.')
+      h3('span', {}, 'Dengan menyelesaikan pesanan, Anda menyetujui Syarat & Ketentuan dan Kebijakan Privasi TumBAS.')
     )
   );
 
@@ -208,12 +208,12 @@ function renderLogin(state) {
     h3('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' } },
       h3('div', { style: { width: '20px', height: '20px', background: 'var(--text)', borderRadius: '2px', position: 'relative' } },
         h3('div', { style: { position: 'absolute', inset: '5px', background: 'var(--bg)', borderRadius: '1px' } })),
-      h3('span', { style: { fontWeight: '600', letterSpacing: '-0.02em' } }, 'NIMBUS')
+      h3('span', { style: { fontWeight: '600', letterSpacing: '-0.02em' } }, 'TumBAS')
     ),
     h3('h1', { style: { fontSize: '24px', fontWeight: '600', letterSpacing: '-0.02em', margin: '0 0 6px' } },
       isSignup ? 'Buat akun' : 'Masuk ke akun'),
     h3('div', { style: { fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px' } },
-      isSignup ? 'Bergabunglah dengan Nimbus dan akses penawaran eksklusif.' : 'Selamat datang kembali. Masukkan kredensial Anda.'),
+      isSignup ? 'Bergabunglah dengan TumBAS dan akses penawaran eksklusif.' : 'Selamat datang kembali. Masukkan kredensial Anda.'),
     h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' } },
       isSignup ? field('Nama lengkap', { value: a.name, oninput: (e) => a.name = e.target.value }) : null,
       field('Email', { value: a.email, type: 'email', placeholder: 'anda@email.com', oninput: (e) => a.email = e.target.value }),
@@ -306,5 +306,5 @@ function renderConfirm(state) {
   );
 }
 
-window.NIMBUS_SCREENS_3 = { renderCheckout, renderLogin, renderConfirm };
+window.TumBAS_SCREENS_3 = { renderCheckout, renderLogin, renderConfirm };
 })();
