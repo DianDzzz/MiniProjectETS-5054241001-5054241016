@@ -77,9 +77,9 @@
         logo,
         !isMobile ? h('nav', { style: { display: 'flex', gap: '4px', marginLeft: '16px' } },
           navBtn('Katalog', () => state.nav('catalog'), state.route.name === 'catalog'),
-          navBtn('Brand', () => { }),
-          navBtn('Penawaran', () => { }),
-          navBtn('Dukungan', () => { }),
+          navBtn('Brand', () => state.nav('brands'), state.route.name === 'brands'),
+          navBtn('Penawaran', () => { state.showDiscountsOnly = true; state.nav('catalog', null, true); }, state.showDiscountsOnly && state.route.name === 'catalog'),
+          navBtn('Dukungan', () => state.nav('support'), state.route.name === 'support'),
         ) : null,
         h('div', { style: { flex: '1' } }),
         !isMobile ? searchField : null,
@@ -133,7 +133,11 @@
         class: 'imgph',
         style: { aspectRatio: '1', position: 'relative', borderBottom: '1px solid var(--line)' }
       },
-        productVis(p.shape, 'var(--text)'),
+        p.image ? h('img', {
+          src: p.image,
+          style: { width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0' },
+          alt: p.name
+        }) : productVis(p.shape, 'var(--text)'),
         p.badge ? h('span', { class: 'badge', style: { position: 'absolute', top: '10px', left: '10px' } }, p.badge) : null,
         p.stock === 0 ? h('span', { class: 'badge', style: { position: 'absolute', top: '10px', left: '10px', background: 'var(--text-faint)' } }, 'HABIS') : null,
         h('span', {
@@ -170,6 +174,7 @@
       if (p.price < f.priceMin || p.price > f.priceMax) return false;
       if (f.colors.length && !f.colors.some(c => p.colors.map(x => x.hex).includes(c))) return false;
       if (f.sizes.length && (!p.sizes || !p.sizes.some(s => f.sizes.includes(s)))) return false;
+      if (state.showDiscountsOnly && !p.oldPrice) return false;
       return true;
     });
     switch (state.sort) {
@@ -390,5 +395,120 @@
     return overlay;
   }
 
-  window.TumBAS_SCREENS_1 = { renderHeader, renderFooter, renderCatalog };
+  function renderBrands(state) {
+    const isMobile = state.frame === 'mobile';
+    
+    // Mapping logo untuk setiap brand
+    const brandLogos = {
+      'Apple': 'Assets/apple.png',
+      'HP': 'Assets/hp.png',
+      'Sony': 'Assets/sony.png',
+      '4Tech': 'Assets/4tech.png',
+      'IKEA': 'Assets/ikea.png',
+      'Hitachi': 'Assets/hitachi.png'
+    };
+
+    return h('div', { style: { padding: isMobile ? '16px' : '32px', maxWidth: '1200px', margin: '0 auto' } },
+      h('div', { style: { marginBottom: '32px' } },
+        h('h1', { style: { fontSize: isMobile ? '24px' : '32px', fontWeight: '600', letterSpacing: '-0.02em', margin: '0 0 8px' } }, 'Brand'),
+        h('div', { style: { fontSize: '14px', color: 'var(--text-muted)' } }, 'Jelajahi koleksi dari brand-brand terkemuka')
+      ),
+      h('div', { style: { display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: '20px' } },
+        ...BRANDS.map(b => h('div', {
+          class: 'card',
+          style: { padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '220px', cursor: 'pointer', border: '1px solid var(--line)', transition: 'border-color .2s, transform .2s' },
+          onmouseover: (e) => { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.transform = 'translateY(-4px)'; },
+          onmouseout: (e) => { e.currentTarget.style.borderColor = 'var(--line)'; e.currentTarget.style.transform = 'translateY(0)'; },
+          onclick: () => {
+            state.filters.brands = [b];
+            state.nav('catalog');
+          }
+        },
+          h('div', { 
+            style: { 
+              width: '100%', 
+              height: '120px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              marginBottom: '12px',
+              overflow: 'hidden'
+            } 
+          },
+            h('img', {
+              src: brandLogos[b] || 'Assets/placeholder.png',
+              alt: b,
+              style: {
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain'
+              }
+            })
+          ),
+          h('div', { style: { fontSize: '16px', fontWeight: '600', color: 'var(--text)', textAlign: 'center' } }, b)
+        ))
+      )
+    );
+  }
+
+  function renderSupport(state) {
+    const isMobile = state.frame === 'mobile';
+    if (!state.feedback) state.feedback = { name: '', email: '', message: '', sent: false };
+    const fb = state.feedback;
+
+    const handleSubmit = () => {
+      if (fb.name.trim() === '' || fb.email.trim() === '' || fb.message.trim() === '') {
+        alert('Semua field harus diisi');
+        return;
+      }
+      if (!fb.email.includes('@')) {
+        alert('Email harus valid');
+        return;
+      }
+      alert('Terima kasih atas masukannya');
+      fb.sent = true;
+      state.rerender();
+      setTimeout(() => {
+        fb.name = '';
+        fb.email = '';
+        fb.message = '';
+        fb.sent = false;
+        state.rerender();
+      }, 2000);
+    };
+
+    return h('div', { style: { padding: isMobile ? '16px' : '32px', maxWidth: '600px', margin: '0 auto' } },
+      h('div', { style: { marginBottom: '32px' } },
+        h('h1', { style: { fontSize: isMobile ? '24px' : '32px', fontWeight: '600', letterSpacing: '-0.02em', margin: '0 0 8px' } }, 'Hubungi Kami'),
+        h('div', { style: { fontSize: '14px', color: 'var(--text-muted)' } }, 'Kami siap membantu Anda. Berikan feedback atau pertanyaan Anda.')
+      ),
+      !fb.sent ? h('div', { class: 'card', style: { padding: isMobile ? '24px' : '32px' } },
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: '20px' } },
+          h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+            h('label', { class: 'field-label' }, 'Nama'),
+            h('div', { class: 'field', style: { padding: '10px 12px' } },
+              h('input', { placeholder: 'Masukkan nama Anda', value: fb.name, oninput: (e) => fb.name = e.target.value })
+            )
+          ),
+          h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+            h('label', { class: 'field-label' }, 'Email'),
+            h('div', { class: 'field', style: { padding: '10px 12px' } },
+              h('input', { type: 'email', placeholder: 'anda@email.com', value: fb.email, oninput: (e) => fb.email = e.target.value })
+            )
+          ),
+          h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+            h('label', { class: 'field-label' }, 'Pesan'),
+            h('div', { class: 'field', style: { padding: '10px 12px' } },
+              h('textarea', { placeholder: 'Tulis pesan Anda di sini...', style: { minHeight: '120px', resize: 'vertical' }, value: fb.message, oninput: (e) => fb.message = e.target.value })
+            )
+          ),
+          h('button', { class: 'btn btn-primary btn-lg btn-block', onclick: handleSubmit }, 'Kirim')
+        )
+      ) : h('div', { style: { padding: '40px 20px', textAlign: 'center', color: 'var(--positive)' } },
+        h('div', { style: { fontSize: '16px', fontWeight: '500' } }, '✓ Terima kasih atas masukannya')
+      )
+    );
+  }
+
+  window.TumBAS_SCREENS_1 = { renderHeader, renderFooter, renderCatalog, renderBrands, renderSupport };
 })();

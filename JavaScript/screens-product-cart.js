@@ -30,15 +30,15 @@ function renderProduct(state) {
   );
 
   const imageBlock = h2('div', {},
-    h2('div', { class: 'imgph card', style: { aspectRatio: '1', position: 'relative', overflow: 'hidden' } },
-      pvis2(p.shape, v.color),
-      h2('span', { class: 'mono', style: { position: 'absolute', top: '12px', left: '12px', fontSize: '10px', color: 'var(--text-faint)' } }, `${p.sku} · 01/04`)
+    h2('div', { class: 'card', style: { aspectRatio: '1', position: 'relative', overflow: 'hidden', background: 'var(--bg-contrast)' } },
+      p.image ? h2('img', { src: p.image, style: { width: '100%', height: '100%', objectFit: 'cover' }, alt: p.name }) : pvis2(p.shape, v.color),
+      h2('span', { class: 'mono', style: { position: 'absolute', top: '12px', left: '12px', fontSize: '10px', color: 'var(--text-faint)', background: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '2px' } }, `${p.sku} · 01/04`)
     ),
     !isMobile ? h2('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginTop: '12px' } },
       ...[0,1,2,3].map(i => h2('div', {
-        class: 'imgph card',
-        style: { aspectRatio: '1', position: 'relative', borderColor: i === 0 ? 'var(--text)' : 'var(--line)', cursor: 'pointer' }
-      }, pvis2(p.shape, v.color)))
+        class: 'card',
+        style: { aspectRatio: '1', position: 'relative', borderColor: i === 0 ? 'var(--text)' : 'var(--line)', cursor: 'pointer', overflow: 'hidden', background: 'var(--bg-contrast)' }
+      }, p.image ? h2('img', { src: p.image, style: { width: '100%', height: '100%', objectFit: 'cover' }, alt: p.name }) : pvis2(p.shape, v.color)))
     ) : null
   );
 
@@ -202,14 +202,16 @@ function renderCart(state) {
   }
 
   const items = h2('div', { class: 'card', style: { overflow: 'hidden' } },
-    ...cart.map((it, idx) => h2('div', {
+    ...cart.map((it, idx) => {
+      const prod = PRODS2.find(p => p.id === it.productId);
+      return h2('div', {
       style: {
         display: 'flex', gap: isMobile ? '10px' : '16px', padding: '16px',
         borderBottom: idx < cart.length - 1 ? '1px solid var(--line)' : 'none',
       }
     },
-      h2('div', { class: 'imgph', style: { width: isMobile ? '70px' : '90px', height: isMobile ? '70px' : '90px', borderRadius: '4px', position: 'relative', flexShrink: '0' } },
-        pvis2(it.shape, it.color)),
+      h2('div', { style: { width: isMobile ? '70px' : '90px', height: isMobile ? '70px' : '90px', borderRadius: '4px', position: 'relative', flexShrink: '0', overflow: 'hidden', background: 'var(--bg-contrast)' } },
+        prod && prod.image ? h2('img', { src: prod.image, style: { width: '100%', height: '100%', objectFit: 'cover' }, alt: it.name }) : pvis2(it.shape, it.color)),
       h2('div', { style: { flex: '1', display: 'flex', flexDirection: 'column', gap: '4px', minWidth: '0' } },
         h2('div', { class: 'mono', style: { fontSize: '10px', color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, it.brand),
         h2('div', { style: { fontSize: '14px', fontWeight: '500' } }, it.name),
@@ -231,7 +233,8 @@ function renderCart(state) {
           )
         )
       )
-    ))
+    );
+    })
   );
 
   const summary = h2('div', { class: 'card', style: { padding: '20px', position: isMobile ? 'static' : 'sticky', top: '80px' } },

@@ -3,7 +3,7 @@
 
 (function() {
 const { h } = window.TumBAS_HELPERS;
-const { renderHeader, renderFooter, renderCatalog } = window.TumBAS_SCREENS_1;
+const { renderHeader, renderFooter, renderCatalog, renderBrands, renderSupport } = window.TumBAS_SCREENS_1;
 const { renderProduct, renderCart } = window.TumBAS_SCREENS_2;
 const { renderCheckout, renderLogin, renderConfirm } = window.TumBAS_SCREENS_3;
 
@@ -15,7 +15,7 @@ const _saveCart = window.TumBAS_DATA.saveCart;
 function makeFrameState({ frame, container, sharedCart }) {
   const state = {
     frame,                  // 'desktop' | 'mobile'
-    route: { name: 'catalog', param: null },
+    route: { name: 'login', param: null },
     cart: sharedCart.cart,
     user: null,
     theme: localStorage.getItem(THEME_KEY) || 'light',
@@ -27,10 +27,12 @@ function makeFrameState({ frame, container, sharedCart }) {
     sort: null,
     showFilters: false,
     showSort: false,
+    showDiscountsOnly: false,
   };
 
-  state.nav = (name, param = null) => {
+  state.nav = (name, param = null, fromPromoButton = false) => {
     state.route = { name, param };
+    if (!fromPromoButton) state.showDiscountsOnly = false;
     container.scrollTop = 0;
     state.rerender();
   };
@@ -71,7 +73,10 @@ function render(state, container) {
   container.innerHTML = '';
   const wrap = h('div', { style: { minHeight: '100%', display: 'flex', flexDirection: 'column' } });
 
-  wrap.appendChild(renderHeader(state));
+  // Header hanya muncul di halaman selain login
+  if (state.route.name !== 'login') {
+    wrap.appendChild(renderHeader(state));
+  }
 
   const main = h('div', { style: { flex: '1' } });
 
@@ -82,11 +87,18 @@ function render(state, container) {
     case 'checkout': main.appendChild(renderCheckout(state)); break;
     case 'login':    main.appendChild(renderLogin(state)); break;
     case 'confirm':  main.appendChild(renderConfirm(state)); break;
+    case 'brands':   main.appendChild(renderBrands(state)); break;
+    case 'support':  main.appendChild(renderSupport(state)); break;
     default:         main.appendChild(renderCatalog(state));
   }
 
   wrap.appendChild(main);
-  wrap.appendChild(renderFooter(state));
+  
+  // Footer hanya muncul di halaman selain login
+  if (state.route.name !== 'login') {
+    wrap.appendChild(renderFooter(state));
+  }
+  
   container.appendChild(wrap);
 }
 

@@ -174,8 +174,9 @@ function renderCheckout(state) {
         onclick: () => {
           if (co.step < 3) { co.step++; state.rerender(); return; }
           state.lastOrder = { id: 'NMB-' + Math.floor(Math.random() * 900000 + 100000), total, items: [...cart], shipping: { ...co.shipping }, payment: { method: co.payment.method } };
-          state.cart = []; state.persistCart();
           state.checkout = null;
+          state.cart.length = 0;
+          state.persistCart();
           state.nav('confirm');
         }
       }, co.step < 3 ? 'Lanjutkan' : 'Bayar Sekarang ' , co.step < 3 ? icon3('arrow', 12) : null)
@@ -199,7 +200,55 @@ function renderLogin(state) {
   const isMobile = state.frame === 'mobile';
   if (!state.auth) state.auth = { mode: 'login', email: '', password: '', name: '' };
   const a = state.auth;
-  const isSignup = a.mode === 'signup';
+  
+  // Check if user sudah terdaftar
+  const savedUser = localStorage.getItem('TumBAS_User');
+  const hasAccount = savedUser !== null;
+  const shouldShowSignup = !hasAccount || a.mode === 'signup';
+
+  const handleSignup = () => {
+    if (!a.email.includes('@')) {
+      alert('Email harus valid (mengandung @)');
+      return;
+    }
+    if (a.email.trim() === '' || a.password.trim() === '' || a.name.trim() === '') {
+      alert('Semua field harus diisi');
+      return;
+    }
+    const userData = { name: a.name, email: a.email, password: a.password };
+    localStorage.setItem('TumBAS_User', JSON.stringify(userData));
+    alert('Registrasi Berhasil');
+    state.auth.mode = 'login';
+    state.auth.email = '';
+    state.auth.password = '';
+    state.auth.name = '';
+    state.rerender();
+  };
+
+  const handleLogin = () => {
+    if (!a.email.includes('@')) {
+      alert('Email harus valid (mengandung @)');
+      return;
+    }
+    if (a.email.trim() === '' || a.password.trim() === '') {
+      alert('Email dan password tidak boleh kosong');
+      return;
+    }
+    const savedUser = localStorage.getItem('TumBAS_User');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      if (user.email === a.email && user.password === a.password) {
+        state.user = { name: user.name, email: user.email };
+        state.auth.email = '';
+        state.auth.password = '';
+        state.nav('catalog');
+      } else {
+        alert('Email atau password salah');
+      }
+    } else {
+      alert('Akun tidak ditemukan. Silakan daftar terlebih dahulu');
+    }
+  };
 
   const card = h3('div', {
     class: 'card',
@@ -211,42 +260,54 @@ function renderLogin(state) {
       h3('span', { style: { fontWeight: '600', letterSpacing: '-0.02em' } }, 'TumBAS')
     ),
     h3('h1', { style: { fontSize: '24px', fontWeight: '600', letterSpacing: '-0.02em', margin: '0 0 6px' } },
-      isSignup ? 'Buat akun' : 'Masuk ke akun'),
+      shouldShowSignup ? 'Buat akun' : 'Masuk ke akun'),
     h3('div', { style: { fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px' } },
-      isSignup ? 'Bergabunglah dengan TumBAS dan akses penawaran eksklusif.' : 'Selamat datang kembali. Masukkan kredensial Anda.'),
+      shouldShowSignup ? 'Bergabunglah dengan TumBAS dan akses penawaran eksklusif.' : 'Selamat datang kembali. Masukkan kredensial Anda.'),
     h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' } },
-      isSignup ? field('Nama lengkap', { value: a.name, oninput: (e) => a.name = e.target.value }) : null,
-      field('Email', { value: a.email, type: 'email', placeholder: 'anda@email.com', oninput: (e) => a.email = e.target.value }),
-      field('Kata sandi', { value: a.password, type: 'password', placeholder: '••••••••', oninput: (e) => a.password = e.target.value }),
+      shouldShowSignup ? h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+        h3('label', { class: 'field-label' }, 'Nama lengkap'),
+        h3('div', { class: 'field', style: { padding: '10px 12px' } },
+          h3('input', { placeholder: 'Nama Anda', value: a.name, oninput: (e) => a.name = e.target.value }))
+      ) : null,
+      h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+        h3('label', { class: 'field-label' }, 'Email'),
+        h3('div', { class: 'field', style: { padding: '10px 12px' } },
+          h3('input', { type: 'email', placeholder: 'anda@email.com', value: a.email, oninput: (e) => a.email = e.target.value }))
+      ),
+      h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } },
+        h3('label', { class: 'field-label' }, 'Kata sandi'),
+        h3('div', { class: 'field', style: { padding: '10px 12px' } },
+          h3('input', { type: 'password', placeholder: '••••••••', value: a.password, oninput: (e) => a.password = e.target.value }))
+      )
     ),
-    !isSignup ? h3('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', fontSize: '12px' } },
+    !shouldShowSignup ? h3('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', fontSize: '12px' } },
       h3('label', { style: { display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' } },
         h3('span', { class: 'check' }), 'Ingat saya'),
-      h3('button', { style: { color: 'var(--text-muted)', textDecoration: 'underline' } }, 'Lupa kata sandi?')
+      h3('button', { style: { color: 'var(--text-muted)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: 0 } }, 'Lupa kata sandi?')
     ) : null,
     h3('button', {
       class: 'btn btn-primary btn-block btn-lg',
-      onclick: () => { state.user = { name: a.name || 'Andi P.', email: a.email || 'andi@example.com' }; state.nav('catalog'); }
-    }, isSignup ? 'Daftar' : 'Masuk'),
+      onclick: () => { shouldShowSignup ? handleSignup() : handleLogin(); }
+    }, shouldShowSignup ? 'Daftar' : 'Masuk'),
     h3('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', margin: '20px 0' } },
       h3('hr', { class: 'hr', style: { flex: '1' } }),
       h3('span', { class: 'mono', style: { fontSize: '10px', color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, 'atau'),
       h3('hr', { class: 'hr', style: { flex: '1' } }),
     ),
     h3('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
-      h3('button', { class: 'btn btn-secondary btn-block' }, 'Lanjutkan dengan Google'),
-      h3('button', { class: 'btn btn-secondary btn-block' }, 'Lanjutkan dengan Apple'),
+      h3('button', { class: 'btn btn-secondary btn-block', style: { background: 'none' } }, 'Lanjutkan dengan Google'),
+      h3('button', { class: 'btn btn-secondary btn-block', style: { background: 'none' } }, 'Lanjutkan dengan Apple'),
     ),
     h3('div', { style: { fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '24px' } },
-      isSignup ? 'Sudah punya akun? ' : 'Belum punya akun? ',
-      h3('button', { onclick: () => { a.mode = isSignup ? 'login' : 'signup'; state.rerender(); }, style: { color: 'var(--text)', fontWeight: '500', textDecoration: 'underline' } },
-        isSignup ? 'Masuk' : 'Daftar')
+      shouldShowSignup ? 'Sudah punya akun? ' : 'Belum punya akun? ',
+      h3('button', { onclick: () => { a.mode = shouldShowSignup ? 'login' : 'signup'; state.rerender(); }, style: { color: 'var(--text)', fontWeight: '500', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: 0 } },
+        shouldShowSignup ? 'Masuk' : 'Daftar Sekarang')
     )
   );
 
   return h3('div', {
     style: {
-      minHeight: 'calc(100% - 64px)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: isMobile ? '24px 16px' : '60px 32px', background: 'var(--bg-sunken)',
     }
   }, card);
@@ -300,7 +361,9 @@ function renderConfirm(state) {
       )
     ),
     h3('div', { style: { display: 'flex', gap: '10px', flexDirection: isMobile ? 'column' : 'row' } },
-      h3('button', { class: 'btn btn-primary', style: { flex: '1' }, onclick: () => state.nav('catalog') }, 'Lanjutkan Belanja'),
+      h3('button', { class: 'btn btn-primary', style: { flex: '1' }, onclick: () => {
+        state.nav('catalog');
+      } }, 'Lanjutkan Belanja'),
       h3('button', { class: 'btn btn-secondary', style: { flex: '1' } }, icon3('truck', 14), ' Lacak Pesanan'),
     )
   );
